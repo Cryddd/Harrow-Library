@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/FloorBase.gd" id="1_floor"]
+
+[node name="Floor3" type="Node2D"]
+script = ExtResource("1_floor")
+floor_number = 3
+floor_name = "Classified Research Facility"
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+
+[node name="Rooms" type="Node2D" parent="."]
+
+[node name="AbandonedLab" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(60, 120, 700, 760)
+
+[node name="System7Core" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(800, 280, 320, 420)
+
+[node name="RestrictedArchive" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(1180, 160, 520, 300)
+
+[node name="KaiWorkstation" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(1180, 520, 520, 300)
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="NPCs" type="Node2D" parent="."]
+
+[node name="Fragments" type="Node2D" parent="."]

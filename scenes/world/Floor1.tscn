@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/FloorBase.gd" id="1_floor"]
+
+[node name="Floor1" type="Node2D"]
+script = ExtResource("1_floor")
+floor_number = 1
+floor_name = "Student Hub"
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+
+[node name="Rooms" type="Node2D" parent="."]
+
+[node name="EntryHall" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(60, 150, 420, 280)
+
+[node name="GeneralStacks" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(60, 470, 420, 380)
+
+[node name="CodingLab" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(520, 150, 560, 500)
+
+[node name="CollaborationZone" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(520, 690, 560, 240)
+
+[node name="QuietStudy" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(1140, 150, 340, 320)
+
+[node name="ArchiveWing" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(1140, 510, 560, 360)
+
+[node name="ReadingHall" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(60, 900, 1640, 150)
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="NPCs" type="Node2D" parent="."]
+
+[node name="Fragments" type="Node2D" parent="."]

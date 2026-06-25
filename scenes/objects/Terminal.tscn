@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/objects/Terminal.gd" id="1_terminal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terminal"]
+size = Vector2(54, 70)
+
+[node name="Terminal" type="Area2D"]
+script = ExtResource("1_terminal")
+interaction_label = "Use terminal"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_terminal")
+
+[node name="ScreenGlow" type="PointLight2D" parent="."]
+color = Color(0.690196, 0.415686, 1, 1)
+energy = 0.6
+texture_scale = 0.5

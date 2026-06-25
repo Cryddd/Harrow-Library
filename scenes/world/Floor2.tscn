@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/FloorBase.gd" id="1_floor"]
+
+[node name="Floor2" type="Node2D"]
+script = ExtResource("1_floor")
+floor_number = 2
+floor_name = "Software Engineering & AI"
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+
+[node name="Rooms" type="Node2D" parent="."]
+
+[node name="SoftwareEngineeringLab" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(60, 130, 500, 470)
+
+[node name="AIResearchLab" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(610, 130, 540, 470)
+
+[node name="StudyLounge" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(1210, 130, 490, 470)
+
+[node name="ProjectPit" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(60, 640, 500, 260)
+
+[node name="PresentationBay" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(610, 640, 540, 260)
+
+[node name="SealedServerAnnex" type="Node2D" parent="Rooms"]
+metadata/rect = Rect2(1210, 640, 490, 260)
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="NPCs" type="Node2D" parent="."]
+
+[node name="Fragments" type="Node2D" parent="."]
