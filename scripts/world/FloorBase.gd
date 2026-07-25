@@ -159,6 +159,212 @@ func _draw_books(parent: Node2D, rect: Rect2) -> void:
 			x += w + 3
 			idx += 1
 
+func _draw_shelf_case(parent: Node2D, rect: Rect2, kind: String) -> void:
+	var wood := Color("#3a1d0f") if not kind.contains("archive") else Color("#241020")
+	parent.add_child(_rect_node(rect, wood.darkened(0.08)))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(4, 4), rect.size - Vector2(8, 8)), wood))
+	parent.add_child(_rect_node(Rect2(rect.position, Vector2(rect.size.x, 5)), wood.lightened(0.22)))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x - 5, 0), Vector2(5, rect.size.y)), wood.darkened(0.35)))
+
+func _draw_rug(parent: Node2D, rect: Rect2) -> void:
+	var base := Color("#5a3b28")
+	parent.add_child(_rect_node(rect, base))
+	parent.add_child(_rect_node(rect.grow(-8.0), base.lightened(0.18)))
+	parent.add_child(_rect_node(rect.grow(-18.0), base.darkened(0.08)))
+
+func _draw_plant(parent: Node2D, rect: Rect2) -> void:
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.25, rect.size.y * 0.62), Vector2(rect.size.x * 0.5, rect.size.y * 0.32)), Color("#8b2e24")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.18, rect.size.y * 0.58), Vector2(rect.size.x * 0.64, 5)), Color("#5f201a")))
+	for i in range(7):
+		var leaf := Polygon2D.new()
+		var cx := rect.position.x + rect.size.x * (0.5 + (i - 3) * 0.07)
+		var cy := rect.position.y + rect.size.y * (0.45 - abs(i - 3) * 0.035)
+		leaf.polygon = PackedVector2Array([
+			Vector2(cx, cy - 22),
+			Vector2(cx + 8 + (i % 2) * 5, cy),
+			Vector2(cx, cy + 18),
+			Vector2(cx - 8 - ((i + 1) % 2) * 5, cy),
+		])
+		leaf.color = Color("#3fa657").darkened(0.08 * float(i % 3))
+		parent.add_child(leaf)
+
+func _draw_lamp(parent: Node2D, rect: Rect2, kind: String) -> void:
+	var warm := Color("#ffd36a")
+	if kind == "broken_lamp":
+		warm = Color("#a37a4a")
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.45, rect.size.y * 0.35), Vector2(4, rect.size.y * 0.5)), Color("#2b2118")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.25, rect.size.y * 0.82), Vector2(rect.size.x * 0.5, 5)), Color("#2b2118")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.12, rect.size.y * 0.16), Vector2(rect.size.x * 0.76, rect.size.y * 0.22)), warm.darkened(0.35)))
+	_draw_glow(parent, rect.position + Vector2(rect.size.x * 0.5, rect.size.y * 0.42), warm, rect.size.y)
+
+func _draw_window(parent: Node2D, rect: Rect2) -> void:
+	parent.add_child(_rect_node(rect, Color("#2d5c83")))
+	parent.add_child(_rect_node(rect.grow(-5.0), Color("#9bd3ff")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(8, rect.size.y - 16), Vector2(rect.size.x - 16, 10)), Color("#55a968")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(10, 8), Vector2(4, rect.size.y - 16)), Color("#ffffff88")))
+	_draw_glow(parent, rect.get_center() + Vector2(0, 34), Color("#ffe0a066"), rect.size.x * 0.85)
+
+func _draw_banner(parent: Node2D, rect: Rect2) -> void:
+	parent.add_child(_rect_node(rect, Color("#4b1f23")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(8, 5), Vector2(rect.size.x - 16, 4)), Color("#d8a04f")))
+	for i in range(4):
+		parent.add_child(_rect_node(Rect2(rect.position + Vector2(18 + i * 46, 12), Vector2(28, 6)), Color("#f0c56d").darkened(0.1 * i)))
+
+func _draw_seating(parent: Node2D, rect: Rect2, kind: String) -> void:
+	var col := Color("#4c6f54") if kind == "sofa" else Color("#6d4429")
+	if kind == "chairs":
+		for x in range(int(rect.position.x), int(rect.end.x), 54):
+			for y in range(int(rect.position.y), int(rect.end.y), 46):
+				_draw_seating(parent, Rect2(x, y, 34, 28), "bench")
+		return
+	parent.add_child(_rect_node(rect, col))
+	parent.add_child(_rect_node(Rect2(rect.position, Vector2(rect.size.x, rect.size.y * 0.28)), col.lightened(0.18)))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(4, rect.size.y - 6), Vector2(rect.size.x - 8, 6)), col.darkened(0.32)))
+	if kind == "sofa":
+		for x in [rect.position.x + rect.size.x / 3.0, rect.position.x + rect.size.x * 2.0 / 3.0]:
+			parent.add_child(_rect_node(Rect2(x, rect.position.y + 4, 3, rect.size.y - 12), col.darkened(0.22)))
+
+func _draw_workstations(parent: Node2D, rect: Rect2, kind: String) -> void:
+	if kind == "workstation_cluster":
+		for x in range(int(rect.position.x), int(rect.end.x - 118), 148):
+			for y in range(int(rect.position.y), int(rect.end.y - 52), 110):
+				_draw_workstations(parent, Rect2(x, y, 118, 52), "workstation")
+		return
+	if kind == "research_cluster":
+		_draw_workstations(parent, Rect2(rect.position, Vector2(112, 52)), "workstation")
+		_draw_workstations(parent, Rect2(rect.position + Vector2(126, 0), Vector2(112, 52)), "workstation")
+		_draw_tabletop(parent, Rect2(rect.position + Vector2(10, 112), Vector2(rect.size.x - 20, 76)), Color("#53341f"))
+		_draw_robot(parent, Rect2(rect.position + Vector2(78, 126), Vector2(62, 68)))
+		return
+	_draw_tabletop(parent, rect, Color("#203248"))
+	var screen_rect := Rect2(rect.position + Vector2(18, -24), Vector2(36, 32))
+	var screen_color := _glow_color(kind)
+	parent.add_child(_rect_node(screen_rect, Color("#111722")))
+	parent.add_child(_rect_node(screen_rect.grow(-4.0), screen_color.darkened(0.55)))
+	for i in range(3):
+		parent.add_child(_rect_node(Rect2(screen_rect.position + Vector2(7, 7 + i * 7), Vector2(20 + i * 4, 2)), screen_color))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(8, rect.size.y - 16), Vector2(66, 10)), Color("#111722")))
+	for i in range(9):
+		parent.add_child(_rect_node(Rect2(rect.position + Vector2(12 + i * 6, rect.size.y - 13), Vector2(3, 2)), Color("#66d9ff66")))
+	if kind.contains("dim"):
+		parent.add_child(_rect_node(screen_rect.grow(-4.0), Color("#101820aa")))
+
+func _draw_tabletop(parent: Node2D, rect: Rect2, color: Color) -> void:
+	parent.add_child(_rect_node(rect, color.darkened(0.08)))
+	parent.add_child(_rect_node(Rect2(rect.position, Vector2(rect.size.x, maxf(5.0, rect.size.y * 0.18))), color.lightened(0.22)))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x - 5, 0), Vector2(5, rect.size.y)), color.darkened(0.3)))
+	_draw_table_props(parent, rect)
+
+func _draw_table_props(parent: Node2D, rect: Rect2) -> void:
+	var colors := [Color("#c94b3b"), Color("#2f7db8"), Color("#40a35d"), Color("#d19b35")]
+	for i in range(3):
+		parent.add_child(_rect_node(Rect2(rect.position + Vector2(12 + i * 14, 10), Vector2(10, 24)), colors[i % colors.size()])))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x - 60, 10), Vector2(42, 28)), Color("#dfd6bd")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x - 48, 17), Vector2(22, 2)), Color("#7b6a52")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.55, 12), Vector2(12, 12)), Color("#2b6f69")))
+
+func _draw_terminal(parent: Node2D, rect: Rect2, kind: String) -> void:
+	if kind == "dead_terminals":
+		for x in range(int(rect.position.x), int(rect.end.x - 68), 108):
+			_draw_terminal(parent, Rect2(x, rect.position.y, 68, 62), "system_terminal")
+		return
+	var frame := Color("#111722") if kind != "core_terminal" else Color("#150622")
+	parent.add_child(_rect_node(rect, frame))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(5, 5), rect.size - Vector2(10, 24)), _glow_color(kind).darkened(0.62)))
+	for i in range(4):
+		parent.add_child(_rect_node(Rect2(rect.position + Vector2(10, 14 + i * 10), Vector2(rect.size.x * (0.42 + i * 0.08), 2)), _glow_color(kind)))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.4, rect.size.y - 16), Vector2(rect.size.x * 0.2, 8)), frame.lightened(0.15)))
+	if kind == "core_terminal":
+		parent.add_child(_rect_node(rect.grow(12.0), Color("#b06aff22")))
+
+func _draw_board(parent: Node2D, rect: Rect2, kind: String) -> void:
+	var base := Color("#d9d6c2")
+	if kind == "neural_display" or kind == "debug_wall":
+		base = Color("#13283a")
+	if kind == "sticky_wall":
+		base = Color("#5c4731")
+	parent.add_child(_rect_node(rect, base))
+	parent.add_child(_rect_node(Rect2(rect.position, Vector2(rect.size.x, 5)), Color("#6c3f22")))
+	if kind == "sticky_wall":
+		var cols := [Color("#f0c56d"), Color("#66d9ff"), Color("#93d78d"), Color("#e87969")]
+		for i in range(20):
+			parent.add_child(_rect_node(Rect2(rect.position + Vector2(8 + (i % 6) * 24, 10 + int(i / 6) * 18), Vector2(14, 10)), cols[i % cols.size()])))
+	else:
+		_draw_board_marks(parent, rect, kind)
+
+func _draw_server_rack(parent: Node2D, rect: Rect2) -> void:
+	parent.add_child(_rect_node(rect, Color("#10131f")))
+	for y in range(int(rect.position.y + 8), int(rect.end.y - 8), 14):
+		parent.add_child(_rect_node(Rect2(rect.position.x + 8, y, rect.size.x - 16, 8), Color("#27283a")))
+		parent.add_child(_rect_node(Rect2(rect.end.x - 20, y + 2, 5, 4), Color("#93d78d")))
+		parent.add_child(_rect_node(Rect2(rect.end.x - 12, y + 2, 5, 4), Color("#66d9ff")))
+
+func _draw_display_case(parent: Node2D, rect: Rect2, kind: String) -> void:
+	parent.add_child(_rect_node(rect, Color("#6c3f22")))
+	parent.add_child(_rect_node(rect.grow(-5.0), Color("#9bd3ff44")))
+	if kind == "glass_partition":
+		for x in range(int(rect.position.x + 24), int(rect.end.x), 48):
+			parent.add_child(_rect_node(Rect2(x, rect.position.y, 3, rect.size.y), Color("#ffffff55")))
+	else:
+		for i in range(3):
+			parent.add_child(_rect_node(Rect2(rect.position + Vector2(12 + i * 28, 14), Vector2(14, 16)), Color("#f0c56d")))
+
+func _draw_ladder(parent: Node2D, rect: Rect2) -> void:
+	parent.add_child(_rect_node(Rect2(rect.position.x + 4, rect.position.y, 4, rect.size.y), Color("#8f5a32")))
+	parent.add_child(_rect_node(Rect2(rect.end.x - 8, rect.position.y, 4, rect.size.y), Color("#8f5a32")))
+	for y in range(int(rect.position.y + 12), int(rect.end.y - 4), 24):
+		parent.add_child(_rect_node(Rect2(rect.position.x + 5, y, rect.size.x - 10, 4), Color("#c98754")))
+
+func _draw_locked_door(parent: Node2D, rect: Rect2) -> void:
+	parent.add_child(_rect_node(rect, Color("#13091f")))
+	parent.add_child(_rect_node(rect.grow(-6.0), Color("#241033")))
+	parent.add_child(_rect_node(Rect2(rect.position, Vector2(rect.size.x, 5)), Color("#b06aff")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.65, rect.size.y * 0.45), Vector2(8, 12)), Color("#d8a04f")))
+
+func _draw_robot(parent: Node2D, rect: Rect2) -> void:
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.2, rect.size.y * 0.28), Vector2(rect.size.x * 0.6, rect.size.y * 0.44)), Color("#bcc8c8")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.32, rect.size.y * 0.12), Vector2(rect.size.x * 0.36, rect.size.y * 0.2)), Color("#7f8c98")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.34, rect.size.y * 0.42), Vector2(6, 6)), Color("#66d9ff")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.58, rect.size.y * 0.42), Vector2(6, 6)), Color("#66d9ff")))
+	parent.add_child(_rect_node(Rect2(rect.position + Vector2(rect.size.x * 0.1, rect.size.y * 0.78), Vector2(rect.size.x * 0.8, 5)), Color("#1d2430")))
+
+func _draw_paper_field(parent: Node2D, rect: Rect2) -> void:
+	for i in range(18):
+		var x := rect.position.x + float((i * 37) % int(rect.size.x - 24))
+		var y := rect.position.y + float((i * 19) % int(rect.size.y - 16))
+		parent.add_child(_rect_node(Rect2(x, y, 22, 14), Color("#dfd6bd").darkened(0.04 * float(i % 3))))
+
+func _draw_cables(parent: Node2D, rect: Rect2, kind: String) -> void:
+	var count := 6 if kind == "cable_ring" else 4
+	for i in range(count):
+		var line := Line2D.new()
+		line.width = 3.0
+		line.default_color = Color("#0b0712")
+		var y := rect.position.y + 10 + i * maxf(8.0, rect.size.y / float(count + 1))
+		line.points = PackedVector2Array([Vector2(rect.position.x + 8, y), Vector2(rect.get_center().x, y + sin(float(i)) * 26.0), Vector2(rect.end.x - 8, y + 8)])
+		parent.add_child(line)
+
+func _draw_stage(parent: Node2D, rect: Rect2) -> void:
+	parent.add_child(_rect_node(rect, Color("#6c3f22")))
+	parent.add_child(_rect_node(Rect2(rect.position, Vector2(rect.size.x, 6)), Color("#d8a04f")))
+	for x in range(int(rect.position.x + 24), int(rect.end.x), 72):
+		parent.add_child(_rect_node(Rect2(x, rect.position.y + 8, 36, 8), Color("#4b2a18")))
+
+func _draw_small_fixture(parent: Node2D, rect: Rect2, kind: String) -> void:
+	var col := Color("#6c3f22")
+	if kind == "printer":
+		col = Color("#c8c8bc")
+	if kind == "water_dispenser":
+		col = Color("#8fcce0")
+	if kind == "bin":
+		col = Color("#347d59")
+	if kind == "warning_light":
+		col = Color("#ff4b5c")
+	parent.add_child(_rect_node(rect, col.darkened(0.12)))
+	parent.add_child(_rect_node(Rect2(rect.position, Vector2(rect.size.x, maxf(4.0, rect.size.y * 0.18))), col.lightened(0.2)))
+	if kind == "warning_light":
+		_draw_glow(parent, rect.get_center(), col, 70.0)
+
 func _draw_board_marks(parent: Node2D, rect: Rect2, kind: String) -> void:
 	var mark_color := Color("#1b2b3a") if not kind.contains("redacted") else Color("#9d2631")
 	for i in range(4):
