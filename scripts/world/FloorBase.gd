@@ -28,7 +28,7 @@ func _draw_room(parent: Node2D, room: Dictionary) -> void:
 	parent.add_child(shadow)
 	var accent: Color = room.get("accent", Color.WHITE)
 	var wall_color: Color = room.get("wall", Color.BLACK)
-	var floor_color: Color = room.get("floor", Color.DIM_GRAY)
+	var floor_color: Color = room.get("floor", Color("#555555"))
 	var trim := _rect_node(rect.grow(10.0), accent.darkened(0.15))
 	parent.add_child(trim)
 	var wall := _rect_node(rect.grow(5.0), wall_color)
