@@ -23,23 +23,26 @@ func _build_environment() -> void:
 		_draw_ambient_fx(background, fx)
 
 func _draw_room(parent: Node2D, room: Dictionary) -> void:
-	var rect: Rect2 = room.rect
+	var rect: Rect2 = room.get("rect", Rect2())
 	var shadow := _rect_node(rect.grow(18.0), Color("#050505"))
 	parent.add_child(shadow)
-	var trim := _rect_node(rect.grow(10.0), room.accent.darkened(0.15))
+	var accent: Color = room.get("accent", Color.WHITE)
+	var wall_color: Color = room.get("wall", Color.BLACK)
+	var floor_color: Color = room.get("floor", Color.DIM_GRAY)
+	var trim := _rect_node(rect.grow(10.0), accent.darkened(0.15))
 	parent.add_child(trim)
-	var wall := _rect_node(rect.grow(5.0), room.wall)
+	var wall := _rect_node(rect.grow(5.0), wall_color)
 	parent.add_child(wall)
-	var floor := _rect_node(rect, room.floor)
+	var floor := _rect_node(rect, floor_color)
 	parent.add_child(floor)
-	var header := _rect_node(Rect2(rect.position, Vector2(rect.size.x, 32.0)), room.wall.darkened(0.18))
+	var header := _rect_node(Rect2(rect.position, Vector2(rect.size.x, 32.0)), wall_color.darkened(0.18))
 	parent.add_child(header)
 	var title := Label.new()
-	title.text = room.name.to_upper()
+	title.text = String(room.get("name", "Room")).to_upper()
 	title.position = rect.position + Vector2(18, 10)
-	title.add_theme_color_override("font_color", room.accent)
+	title.add_theme_color_override("font_color", accent)
 	parent.add_child(title)
-	_draw_floor_lines(parent, rect, room.floor.darkened(0.22))
+	_draw_floor_lines(parent, rect, floor_color.darkened(0.22))
 
 func _draw_floor_lines(parent: Node2D, rect: Rect2, color: Color) -> void:
 	for y in range(int(rect.position.y), int(rect.end.y), 32):
@@ -56,11 +59,11 @@ func _draw_floor_lines(parent: Node2D, rect: Rect2, color: Color) -> void:
 		parent.add_child(line)
 
 func _draw_prop(parent: Node2D, prop: Dictionary) -> void:
-	var rect: Rect2 = prop.rect
-	var kind := String(prop.kind)
+	var rect: Rect2 = prop.get("rect", Rect2())
+	var kind := String(prop.get("kind", "prop"))
 	var color := _prop_color(kind)
 	var body := _rect_node(rect, color)
-	body.name = String(prop.id)
+	body.name = String(prop.get("id", "Prop"))
 	parent.add_child(body)
 	_add_prop_collision(prop)
 	var top := _rect_node(Rect2(rect.position, Vector2(rect.size.x, maxf(3.0, rect.size.y * 0.16))), color.lightened(0.22))
@@ -98,15 +101,15 @@ func _draw_board_marks(parent: Node2D, rect: Rect2, kind: String) -> void:
 		parent.add_child(mark)
 
 func _draw_ambient_fx(parent: Node2D, fx: Dictionary) -> void:
-	_draw_glow(parent, fx.position, fx.color, 72.0)
+	_draw_glow(parent, fx.get("position", Vector2.ZERO), fx.get("color", Color.WHITE), 72.0)
 
 func _add_prop_collision(prop: Dictionary) -> void:
 	var kind := String(prop.kind)
 	if kind.contains("plant") or kind.contains("screen") or kind.contains("display") or kind.contains("glass"):
 		return
-	var rect: Rect2 = prop.rect
+	var rect: Rect2 = prop.get("rect", Rect2())
 	var body := StaticBody2D.new()
-	body.name = "%sCollision" % String(prop.id).to_pascal_case()
+	body.name = "%sCollision" % String(prop.get("id", "Prop")).to_pascal_case()
 	body.position = rect.get_center()
 	var shape := CollisionShape2D.new()
 	var rectangle := RectangleShape2D.new()

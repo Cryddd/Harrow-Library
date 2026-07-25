@@ -101,7 +101,7 @@ func collect_fragment(fragment_id: String) -> void:
 
 func get_fragment(fragment_id: String) -> Dictionary:
 	for fragment in fragments_data:
-		if fragment.id == fragment_id:
+		if fragment.get("id", "") == fragment_id:
 			return fragment
 	return {}
 

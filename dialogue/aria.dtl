@@ -1,0 +1,4 @@
+timeline: aria
+
+Aria: 94.2% accuracy! On a classifier I built from scratch.
+Aria: Also, my model keeps outputting a user ID not in my training data: kai.m.
