@@ -104,7 +104,7 @@ func _draw_ambient_fx(parent: Node2D, fx: Dictionary) -> void:
 	_draw_glow(parent, fx.get("position", Vector2.ZERO), fx.get("color", Color.WHITE), 72.0)
 
 func _add_prop_collision(prop: Dictionary) -> void:
-	var kind := String(prop.kind)
+	var kind := String(prop.get("kind", "prop"))
 	if kind.contains("plant") or kind.contains("screen") or kind.contains("display") or kind.contains("glass"):
 		return
 	var rect: Rect2 = prop.get("rect", Rect2())

@@ -18,18 +18,21 @@ The game blends **exploration**, **dialogue**, **collection**, and **light codin
 
 ## Development status
 
-> **Early scaffold — systems in place, visuals not yet implemented.**
+> **Godot migration scaffold with generated visual architecture.**
 
 | Area | Status |
 |------|--------|
 | Game logic & state | ✅ Implemented |
 | HUD, pause, files UI | ✅ Implemented |
 | Floor layout (data) | ✅ Defined |
+| Generated room architecture | ✅ Implemented |
+| Prop collision scaffold | ✅ Implemented |
 | NPCs & fragments | ✅ Spawned by code |
-| Tilemaps & sprites | ❌ Not yet added |
+| Visual shaders | ✅ Added |
+| Tilemaps & sprites | ⚠️ Asset production pending |
 | Dialogue (Dialogic 2) | ⚠️ Optional plugin, not bundled |
 
-When you run the Godot project today, you will see the **HUD** (chapter, floor, time, objectives) over a grey viewport. The world is running underneath — movement and interaction work — but art assets have not been imported yet.
+When you run the Godot project today, the floors build a readable placeholder version of the redesigned library from `scripts/world/EnvironmentCatalog.gd`: room blocks, color palettes, large props, collision bodies, labels, board markings, book spines, and lighting hooks. This is the production scaffold for the final hand-drawn pixel-art tilesets.
 
 For a **playable visual prototype**, open `harrow-library-game_16.html` in a web browser. That file is a self-contained browser version of the game concept with full pixel-art presentation.
 
@@ -104,6 +107,7 @@ Harrow Library/
 │   ├── sprites/
 │   ├── tilesets/
 │   ├── audio/
+│   ├── themes/
 │   └── shaders/
 ├── dialogue/         # Dialogue timelines (Dialogic 2, when added)
 ├── scenes/
@@ -127,6 +131,17 @@ Harrow Library/
 | `SaveSystem` | Save / load to disk |
 | `AudioManager` | Audio bus management |
 
+### Visual Architecture
+
+| File | Role |
+|------|------|
+| `scripts/world/EnvironmentCatalog.gd` | Room identity, palette, prop dressing, ambient FX per floor |
+| `scripts/world/FloorBase.gd` | Converts environment catalog into generated placeholder architecture and collision |
+| `ENVIRONMENT_REDESIGN.md` | Room-by-room art direction and implementation notes |
+| `assets/tilesets/ART_DIRECTION.md` | Tile production guide based on the reference images |
+| `assets/sprites/SPRITE_PLAN.md` | Character/object sprite production plan |
+| `assets/shaders/*.gdshader` | CRT, glow, and SYSTEM_7 glitch effects |
+
 ---
 
 ## Optional: Dialogic 2
@@ -145,12 +160,12 @@ A macOS export preset is configured in `export_presets.cfg` (`edu.harrow.library
 
 ## Roadmap
 
-- [ ] Import tilesets and paint floor maps
+- [ ] Replace generated block props with final pixel-art sprites
+- [ ] Paint `TileMapLayer`s using `floor1_tiles.png`, `floor2_tiles.png`, and `floor3_tiles.png`
 - [ ] Add player and NPC sprite sheets
-- [ ] Integrate Dialogic 2 timelines
-- [ ] Wire puzzle UI to terminal objects
-- [ ] Add music and SFX via `AudioManager`
-- [ ] Polish Floor 3 reveal and ending
+- [ ] Install Dialogic 2 and import/expand `.dtl` timelines
+- [ ] Port procedural HTML audio fully into `AudioStreamGenerator`
+- [ ] Add ambient animations for monitors, server LEDs, plants, dust, and Floor 3 glitches
 
 ---
 
