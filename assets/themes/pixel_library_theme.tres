@@ -1,0 +1,9 @@
+[gd_resource type="Theme" format=3]
+
+[resource]
+default_font_size = 12
+PanelContainer/styles/panel = null
+Label/colors/font_color = Color(0.86, 0.80, 0.68, 1)
+Button/colors/font_color = Color(0.86, 0.80, 0.68, 1)
+Button/colors/font_hover_color = Color(0.94, 0.75, 0.25, 1)
+RichTextLabel/colors/default_color = Color(0.86, 0.80, 0.68, 1)
