@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var world_root: Node2D = $WorldRoot
 @onready var player: CharacterBody2D = $Player
+@onready var pause_menu: Control = $UI/PauseMenu
 
 func _ready() -> void:
 	GameState.reset_run()
@@ -11,8 +12,10 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
-		GameState.paused = not GameState.paused
-		get_tree().paused = GameState.paused
+		if pause_menu.visible:
+			pause_menu.close()
+		else:
+			pause_menu.open()
 	if event.is_action_pressed("files"):
 		get_tree().call_group("files_panel", "toggle")
 

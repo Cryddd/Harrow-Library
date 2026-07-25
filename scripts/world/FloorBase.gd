@@ -62,6 +62,7 @@ func _draw_prop(parent: Node2D, prop: Dictionary) -> void:
 	var body := _rect_node(rect, color)
 	body.name = String(prop.id)
 	parent.add_child(body)
+	_add_prop_collision(prop)
 	var top := _rect_node(Rect2(rect.position, Vector2(rect.size.x, maxf(3.0, rect.size.y * 0.16))), color.lightened(0.22))
 	parent.add_child(top)
 	if kind.contains("screen") or kind.contains("terminal") or kind.contains("workstation") or kind.contains("server"):
@@ -98,6 +99,21 @@ func _draw_board_marks(parent: Node2D, rect: Rect2, kind: String) -> void:
 
 func _draw_ambient_fx(parent: Node2D, fx: Dictionary) -> void:
 	_draw_glow(parent, fx.position, fx.color, 72.0)
+
+func _add_prop_collision(prop: Dictionary) -> void:
+	var kind := String(prop.kind)
+	if kind.contains("plant") or kind.contains("screen") or kind.contains("display") or kind.contains("glass"):
+		return
+	var rect: Rect2 = prop.rect
+	var body := StaticBody2D.new()
+	body.name = "%sCollision" % String(prop.id).to_pascal_case()
+	body.position = rect.get_center()
+	var shape := CollisionShape2D.new()
+	var rectangle := RectangleShape2D.new()
+	rectangle.size = rect.size
+	shape.shape = rectangle
+	body.add_child(shape)
+	$Objects.add_child(body)
 
 func _draw_glow(parent: Node2D, center: Vector2, color: Color, radius: float) -> void:
 	var glow := PointLight2D.new()

@@ -11,6 +11,8 @@ var nearby_interactable: Node = null
 func _ready() -> void:
 	interact_area.area_entered.connect(_on_interact_area_entered)
 	interact_area.area_exited.connect(_on_interact_area_exited)
+	interact_area.body_entered.connect(_on_interact_body_entered)
+	interact_area.body_exited.connect(_on_interact_body_exited)
 
 func _physics_process(_delta: float) -> void:
 	if GameState.paused:
@@ -51,4 +53,12 @@ func _on_interact_area_entered(area: Area2D) -> void:
 
 func _on_interact_area_exited(area: Area2D) -> void:
 	if nearby_interactable == area:
+		nearby_interactable = null
+
+func _on_interact_body_entered(body: Node2D) -> void:
+	if body.has_method("interact"):
+		nearby_interactable = body
+
+func _on_interact_body_exited(body: Node2D) -> void:
+	if nearby_interactable == body:
 		nearby_interactable = null
