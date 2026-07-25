@@ -37,6 +37,7 @@ func _draw_room(parent: Node2D, room: Dictionary) -> void:
 	parent.add_child(floor)
 	var header := _rect_node(Rect2(rect.position, Vector2(rect.size.x, 32.0)), wall_color.darkened(0.18))
 	parent.add_child(header)
+	_draw_room_architecture(parent, rect, accent, wall_color)
 	var title := Label.new()
 	title.text = String(room.get("name", "Room")).to_upper()
 	title.position = rect.position + Vector2(18, 10)
@@ -61,19 +62,87 @@ func _draw_floor_lines(parent: Node2D, rect: Rect2, color: Color) -> void:
 func _draw_prop(parent: Node2D, prop: Dictionary) -> void:
 	var rect: Rect2 = prop.get("rect", Rect2())
 	var kind := String(prop.get("kind", "prop"))
-	var color := _prop_color(kind)
-	var body := _rect_node(rect, color)
-	body.name = String(prop.get("id", "Prop"))
-	parent.add_child(body)
+	_draw_prop_shape(parent, rect, kind, String(prop.get("id", "Prop")))
 	_add_prop_collision(prop)
-	var top := _rect_node(Rect2(rect.position, Vector2(rect.size.x, maxf(3.0, rect.size.y * 0.16))), color.lightened(0.22))
-	parent.add_child(top)
 	if kind.contains("screen") or kind.contains("terminal") or kind.contains("workstation") or kind.contains("server"):
 		_draw_glow(parent, rect.get_center(), _glow_color(kind), maxf(rect.size.x, rect.size.y) * 0.55)
 	if kind.contains("bookshelf") or kind.contains("archive_shelf"):
 		_draw_books(parent, rect)
 	if kind.contains("whiteboard") or kind == "neural_display":
 		_draw_board_marks(parent, rect, kind)
+
+func _draw_room_architecture(parent: Node2D, rect: Rect2, accent: Color, wall_color: Color) -> void:
+	var pillar_color := wall_color.lightened(0.18)
+	for x in [rect.position.x + 18.0, rect.end.x - 34.0]:
+		parent.add_child(_rect_node(Rect2(x, rect.position.y + 34.0, 16.0, rect.size.y - 50.0), pillar_color.darkened(0.15)))
+		parent.add_child(_rect_node(Rect2(x + 2.0, rect.position.y + 36.0, 4.0, rect.size.y - 54.0), pillar_color.lightened(0.18)))
+	for x in range(int(rect.position.x + 72.0), int(rect.end.x - 80.0), 168):
+		parent.add_child(_rect_node(Rect2(x, rect.position.y + 9.0, 44.0, 11.0), accent.lightened(0.2)))
+		_draw_glow(parent, Vector2(x + 22.0, rect.position.y + 32.0), accent.lightened(0.28), 42.0)
+
+func _draw_prop_shape(parent: Node2D, rect: Rect2, kind: String, id: String) -> void:
+	if kind == "rug":
+		_draw_rug(parent, rect)
+		return
+	if kind == "plant":
+		_draw_plant(parent, rect)
+		return
+	if kind == "lamp" or kind == "floor_lamp" or kind == "broken_lamp":
+		_draw_lamp(parent, rect, kind)
+		return
+	if kind == "window":
+		_draw_window(parent, rect)
+		return
+	if kind == "banner":
+		_draw_banner(parent, rect)
+		return
+	if kind == "bench" or kind == "sofa" or kind == "reading_chair" or kind == "chairs":
+		_draw_seating(parent, rect, kind)
+		return
+	if kind == "bookshelf" or kind == "archive_shelf" or kind == "archive_shelf_cluster":
+		_draw_shelf_case(parent, rect, kind)
+		return
+	if kind.contains("workstation") or kind == "workstation_cluster" or kind == "research_cluster":
+		_draw_workstations(parent, rect, kind)
+		return
+	if kind == "screen" or kind == "system_terminal" or kind == "core_terminal" or kind == "dead_terminals" or kind == "kiosk":
+		_draw_terminal(parent, rect, kind)
+		return
+	if kind == "whiteboard" or kind == "whiteboard_redacted" or kind == "neural_display" or kind == "debug_wall" or kind == "sticky_wall":
+		_draw_board(parent, rect, kind)
+		return
+	if kind == "server_rack":
+		_draw_server_rack(parent, rect)
+		return
+	if kind == "glass" or kind == "display" or kind == "display_case" or kind == "glass_partition":
+		_draw_display_case(parent, rect, kind)
+		return
+	if kind == "ladder":
+		_draw_ladder(parent, rect)
+		return
+	if kind == "locked_door":
+		_draw_locked_door(parent, rect)
+		return
+	if kind == "robot":
+		_draw_robot(parent, rect)
+		return
+	if kind == "paper_field":
+		_draw_paper_field(parent, rect)
+		return
+	if kind == "cable_ring" or kind == "cable_tray":
+		_draw_cables(parent, rect, kind)
+		return
+	if kind == "stage":
+		_draw_stage(parent, rect)
+		return
+	if kind == "printer" or kind == "water_dispenser" or kind == "bin" or kind == "charging_bar" or kind == "vr_station" or kind == "warning_light":
+		_draw_small_fixture(parent, rect, kind)
+		return
+	var color := _prop_color(kind)
+	var body := _rect_node(rect, color)
+	body.name = id
+	parent.add_child(body)
+	parent.add_child(_rect_node(Rect2(rect.position, Vector2(rect.size.x, maxf(3.0, rect.size.y * 0.16))), color.lightened(0.22)))
 
 func _draw_books(parent: Node2D, rect: Rect2) -> void:
 	var colors := [Color("#c94b3b"), Color("#2f7db8"), Color("#40a35d"), Color("#d19b35"), Color("#8c5cc4"), Color("#24b5a6")]
