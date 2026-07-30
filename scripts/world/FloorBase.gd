@@ -376,7 +376,51 @@ func _draw_board_marks(parent: Node2D, rect: Rect2, kind: String) -> void:
 		parent.add_child(mark)
 
 func _draw_ambient_fx(parent: Node2D, fx: Dictionary) -> void:
-	_draw_glow(parent, fx.get("position", Vector2.ZERO), fx.get("color", Color.WHITE), 72.0)
+	var kind := String(fx.get("kind", "glow"))
+	var position: Vector2 = fx.get("position", Vector2.ZERO)
+	var color: Color = fx.get("color", Color.WHITE)
+	_draw_glow(parent, position, color, 72.0)
+	var pulse := AnimatedSprite2D.new()
+	pulse.name = "%sAmbientFX" % kind.to_pascal_case()
+	pulse.position = position
+	parent.add_child(pulse)
+	if kind == "server_leds":
+		for i in range(7):
+			var led := _rect_node(Rect2(position + Vector2(-32 + i * 10, -4 + (i % 2) * 8), Vector2(5, 5)), color.lightened(0.1 * float(i % 3)))
+			parent.add_child(led)
+			_add_blink_animation(led, 0.45 + float(i) * 0.08)
+	elif kind == "monitor_cursor":
+		var cursor := _rect_node(Rect2(position, Vector2(5, 12)), color)
+		parent.add_child(cursor)
+		_add_blink_animation(cursor, 0.55)
+	elif kind == "hologram":
+		for i in range(4):
+			var ring := Line2D.new()
+			ring.width = 2.0
+			ring.default_color = color.darkened(0.08 * i)
+			var pts := PackedVector2Array()
+			for step in range(18):
+				var a := float(step) / 17.0 * TAU
+				pts.append(position + Vector2(cos(a) * (18 + i * 7), sin(a) * (8 + i * 4)))
+			ring.points = pts
+			parent.add_child(ring)
+			_add_blink_animation(ring, 1.1 + float(i) * 0.12)
+	elif kind == "glitch":
+		for i in range(9):
+			var bar := _rect_node(Rect2(position + Vector2(-80 + (i * 19) % 150, -54 + i * 13), Vector2(48 + (i % 3) * 20, 3)), color)
+			parent.add_child(bar)
+			_add_blink_animation(bar, 0.18 + float(i) * 0.03)
+	else:
+		for i in range(8):
+			var mote := _rect_node(Rect2(position + Vector2(-72 + i * 21, -38 + (i * 17) % 74), Vector2(2, 2)), color)
+			parent.add_child(mote)
+			_add_blink_animation(mote, 1.4 + float(i) * 0.1)
+
+func _add_blink_animation(node: CanvasItem, duration: float) -> void:
+	var tween := create_tween()
+	tween.set_loops()
+	tween.tween_property(node, "modulate:a", 0.25, duration)
+	tween.tween_property(node, "modulate:a", 1.0, duration)
 
 func _add_prop_collision(prop: Dictionary) -> void:
 	var kind := String(prop.get("kind", "prop"))
